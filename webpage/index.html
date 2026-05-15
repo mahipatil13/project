@@ -1,36 +1,211 @@
-<!DOCTYPE html>
-<html>
+<<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>My Webpage</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> |Premium Gallery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <style>
-        body {
-            text-align: center;
-            font-family: Arial;
-            background-color: lightblue;
+        :root {
+            --primary: #1a1a1a;
+            --accent: #e6b800; /* Gold accent */
+            --glass: rgba(255, 255, 255, 0.1);
         }
 
-        button {
-            padding: 10px 20px;
-            background-color: blue;
-            color: white;
-            border: none;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
+
+        body {
+            background-color: #050505;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* --- Header --- */
+        header {
+            height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&q=80&w=2000');
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+            border-bottom: 4px solid var(--accent);
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-weight: 300;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 5px;
+        }
+
+        /* --- Filter Navigation --- */
+        .filter-nav {
+            position: sticky;
+            top: 0;
+            background: rgba(10, 10, 10, 0.95);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: white;
+            padding: 8px 25px;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: 0.3s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent);
+            color: black;
+        }
+
+        /* --- Gallery Grid --- */
+        .gallery-container {
+            padding: 40px;
+            column-count: 4; /* Masonry effect */
+            column-gap: 20px;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .gallery-item {
+            margin-bottom: 20px;
+            break-inside: avoid;
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            display: block;
+            border-radius: 10px;
+            transition: 0.5s filter;
+            filter: grayscale(40%);
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.03);
+            z-index: 10;
+        }
+
+        .gallery-item:hover img {
+            filter: grayscale(0%);
+        }
+
+        .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 20px;
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .gallery-item:hover .overlay {
+            opacity: 1;
+        }
+
+        /* Responsive Grid */
+        @media (max-width: 1100px) { .gallery-container { column-count: 3; } }
+        @media (max-width: 768px) { .gallery-container { column-count: 2; } }
+        @media (max-width: 480px) { .gallery-container { column-count: 1; } }
+
     </style>
 </head>
-
 <body>
 
-    <h1>Hello</h1>
-    <p>This is HTML + CSS + JavaScript</p>
+    <header>
+        <h1>THE TITANS</h1>
+        <p>A Visual Tribute to Cricket Legends</p>
+    </header>
 
-    <button onclick="showMessage()">Click Me</button>
+    <div class="filter-nav">
+        <button class="filter-btn active" onclick="filterGallery('all')">All Legends</button>
+        <button class="filter-btn" onclick="filterGallery('kohli')">Virat Kohli</button>
+        <button class="filter-btn" onclick="filterGallery('classic')">Classic Moments</button>
+    </div>
+
+    <div class="gallery-container" id="gallery">
+        <!-- Images will be generated by JavaScript -->
+    </div>
 
     <script>
-        function showMessage() {
-            alert("Button Clicked!");
+        const gallery = document.getElementById('gallery');
+        
+        // Sample data structure for 100 images
+        const images = [];
+        for (let i = 1; i <= 100; i++) {
+            let category = (i % 3 === 0) ? 'kohli' : 'classic';
+            let height = Math.floor(Math.random() * (400 - 250 + 1)) + 250; // Random heights for Masonry
+            
+            images.push({
+                id: i,
+                category: category,
+                // Using Unsplash source for high-quality variety
+                url: category === 'kohli' 
+                    ? `https://picsum.photos/seed/virat${i}/400/${height}` 
+                    : `https://picsum.photos/seed/cricket${i}/400/${height}`,
+                title: category === 'kohli' ? `King Kohli Edition #${i}` : `Iconic Shot #${i}`
+            });
         }
-    </script>
 
+        function displayImages(filter) {
+            gallery.innerHTML = '';
+            const filtered = filter === 'all' ? images : images.filter(img => img.category === filter);
+            
+            filtered.forEach(img => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                item.innerHTML = `
+                    <img src="${img.url}" alt="Cricketer">
+                    <div class="overlay">
+                        <p style="color: var(--accent); font-weight: bold;">${img.title}</p>
+                        <small>Unmatched Intensity</small>
+                    </div>
+                `;
+                gallery.appendChild(item);
+            });
+        }
+
+        function filterGallery(category) {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText.toLowerCase().includes(category)) btn.classList.add('active');
+            });
+            displayImages(category);
+        }
+
+        // Initialize
+        displayImages('all');
+    </script>
 </body>
 </html>
