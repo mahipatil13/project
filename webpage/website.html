@@ -1,80 +1,651 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>Important HTML Tags</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA - Cinematic Experience</title>
+    <!-- Google Fonts for that premium vibe -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    
     <style>
-        body{
-            font-family: Arial;
-            background-color: lightblue;
+        :root {
+            --bg-color: #050505;
+            --text-color: #ffffff;
+            --accent: #d4af37; /* Cinematic Gold */
         }
 
-        h1{
-            color: darkblue;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none; /* Hide default cursor to use custom one */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Cursor */
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--accent);
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+        }
+
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(212, 175, 55, 0.6);
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
+        }
+
+        /* Preloader */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #000;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.5s ease-in-out, visibility 1.5s;
+        }
+
+        .preloader-text {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            letter-spacing: 12px;
+            color: var(--text-color);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; filter: blur(2px); }
+            50% { opacity: 1; filter: blur(0px); }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 2.5rem 5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+            mix-blend-mode: difference;
+        }
+
+        .logo {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 8px;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 4rem;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            position: relative;
+            padding-bottom: 5px;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 1px;
+            background-color: var(--text-color);
+            transition: width 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 0 10%;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=2074&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            /* Cinematic slow zoom effect */
+            animation: kenburns 30s ease-in-out infinite alternate;
+        }
+
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Dark vignette gradient for cinematic feel */
+            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.8) 100%),
+                        linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+        }
+
+        @keyframes kenburns {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.15); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+        }
+
+        .reveal-text {
+            overflow: hidden;
+            display: block;
+        }
+
+        .hero h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(4rem, 8vw, 8rem);
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .hero h1 span {
+            display: inline-block;
+            transform: translateY(110%);
+            animation: slideUp 1.4s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+            animation-delay: 1.2s;
+            color: var(--text-color);
+        }
+        
+        .hero h1 .outline-text {
+            color: transparent;
+            -webkit-text-stroke: 1.5px var(--text-color);
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            font-weight: 300;
+            line-height: 1.8;
+            margin-top: 2rem;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 1.2s ease forwards;
+            animation-delay: 2.2s;
+            color: #d1d5db;
+        }
+
+        @keyframes slideUp {
+            to { transform: translateY(0); }
+        }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .explore-btn {
+            display: inline-block;
+            padding: 1.2rem 3.5rem;
+            border: 1px solid var(--text-color);
+            color: var(--text-color);
+            text-decoration: none;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeUp 1.2s ease forwards;
+            animation-delay: 2.6s;
+            transition: color 0.4s;
+            backdrop-filter: blur(5px);
+        }
+
+        .explore-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background-color: var(--text-color);
+            transition: left 0.5s cubic-bezier(0.7, 0, 0.3, 1);
+            z-index: -1;
+        }
+
+        .explore-btn:hover::before {
+            left: 0;
+        }
+
+        .explore-btn:hover {
+            color: #000;
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            animation: fadeUp 1.5s ease forwards;
+            animation-delay: 3s;
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 60px;
+            background: rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scroll-line::after {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--text-color);
+            animation: dropDown 2s infinite cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        @keyframes dropDown {
+            0% { top: -100%; }
+            50% { top: 100%; }
+            100% { top: 100%; }
+        }
+
+        /* Gallery Section */
+        .gallery-section {
+            padding: 12rem 10%;
+            background-color: var(--bg-color);
+        }
+
+        .section-title {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            text-align: center;
+            margin-bottom: 8rem;
+            position: relative;
+            font-weight: 400;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 1px;
+            background-color: var(--accent);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            height: 70vh;
+            min-height: 500px;
+            overflow: hidden;
+            border-radius: 4px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 1.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .gallery-item.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Staggered layout */
+        .gallery-item:nth-child(2) { margin-top: 8rem; }
+        .gallery-item:nth-child(3) { margin-top: 4rem; }
+
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 2s cubic-bezier(0.165, 0.84, 0.44, 1), filter 1s;
+            filter: grayscale(100%) brightness(0.6);
+        }
+
+        .gallery-item:hover .gallery-img {
+            transform: scale(1.1);
+            filter: grayscale(0%) brightness(1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 4rem 2.5rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.5), transparent);
+            transform: translateY(100%);
+            transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+
+        .gallery-overlay span {
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            color: var(--accent);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .gallery-overlay h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .gallery-overlay p {
+            font-size: 0.95rem;
+            color: #b3b3b3;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        /* Interactive Marquee */
+        .marquee-section {
+            padding: 6rem 0;
+            background: var(--text-color);
+            color: #000;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            transform: rotate(-3deg) scale(1.1);
+            margin: 8rem 0;
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 25s linear infinite;
+            font-family: 'Cinzel', serif;
+            font-size: 5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .marquee-content span {
+            margin: 0 3rem;
+            -webkit-text-stroke: 1.5px #000;
+            color: transparent;
+        }
+
+        .marquee-content span.solid {
+            color: #000;
+            -webkit-text-stroke: 0;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        @media (max-width: 1024px) {
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+            .gallery-item:nth-child(2) { margin-top: 0; }
+            .gallery-item:nth-child(3) { margin-top: 0; grid-column: span 2; height: 50vh; }
+            nav { padding: 2rem; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero h1 { font-size: 3.5rem; }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .gallery-item:nth-child(3) { grid-column: span 1; }
+            * { cursor: auto !important; }
+            .cursor-dot, .cursor-outline { display: none; }
+            .marquee-content { font-size: 3rem; }
         }
     </style>
 </head>
-
 <body>
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-text">AWAKENING</div>
+    </div>
 
-    <h1>Welcome to HTML</h1>
-    <h1>hii</h1>
+    <!-- Custom Cursor -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-outline" id="cursor-outline"></div>
 
-    <p>This is a paragraph tag.</p>
+    <!-- Navigation -->
+    <nav>
+        <a href="#" class="logo hover-target">AURA.</a>
+        <div class="nav-links">
+            <a href="#gallery" class="hover-target">Destinations</a>
+            <a href="#" class="hover-target">Experiences</a>
+            <a href="#" class="hover-target">Journal</a>
+            <a href="#" class="hover-target">Connect</a>
+        </div>
+    </nav>
 
-    <a href="https://www.instagram.com/mr_mahi_patil_17?igsh=MWppNm5pdnA1YTMxYQ==">mahi insta</a>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <h1 class="reveal-text">
+                <span><span class="outline-text">DISCOVER</span> THE</span>
+            </h1>
+            <h1 class="reveal-text">
+                <span>UNSEEN</span>
+            </h1>
+            <p>Embark on a visual journey through nature's most breathtaking masterpieces. Experience the world through a cinematic lens where every moment tells an unforgettable story.</p>
+            <a href="#gallery" class="explore-btn hover-target">Begin Journey</a>
+        </div>
+        
+        <div class="scroll-indicator">
+            <div class="scroll-line"></div>
+        </div>
+    </section>
 
-    <br><br>
+    <!-- Marquee -->
+    <div class="marquee-section">
+        <div class="marquee-content">
+            <span class="solid">WANDER</span> <span>EXPLORE</span> <span class="solid">DISCOVER</span> <span>BREATHE</span> <span class="solid">WANDER</span> <span>EXPLORE</span> <span class="solid">DISCOVER</span> <span>BREATHE</span>
+        </div>
+    </div>
 
-    <img src="C:\Users\Mahesh patil\Pictures\wallpaper vk.jpg" style="width:300px; height:200px;">
+    <!-- Gallery Section -->
+    <section class="gallery-section" id="gallery">
+        <h2 class="section-title">Curated Escapes</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <!-- High quality picture theme -->
+                <img src="https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?q=80&w=1000&auto=format&fit=crop" alt="Forest" class="gallery-img">
+                <div class="gallery-overlay">
+                    <span>Chapter 01</span>
+                    <h3>Mystic Forests</h3>
+                    <p>Lose yourself in the ancient whispering woods where time stands still and shadows dance in the mist.</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=1000&auto=format&fit=crop" alt="Mountains" class="gallery-img">
+                <div class="gallery-overlay">
+                    <span>Chapter 02</span>
+                    <h3>Silent Peaks</h3>
+                    <p>Ascend to the heavens and breathe the crisp, untouched air of the world's highest, most majestic summits.</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1505144808419-1957a94ca61e?q=80&w=1000&auto=format&fit=crop" alt="Ocean" class="gallery-img">
+                <div class="gallery-overlay">
+                    <span>Chapter 03</span>
+                    <h3>Endless Horizons</h3>
+                    <p>Where the deep azure waves meet the infinite sky in a violent yet beautiful symphony of untamed water.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <br><br>
-
-    <button>Click Me</button>
-
-    <hr>
-
-    <ul>
-        <li>HTML</li>
-        <li>CSS</li>
-        <li>JavaScript</li>
-    </ul>
-
-    <hr>
-
-    <table border="1">
-        <tr>
-            <th>Name</th>
-            <th>Age</th>
-        </tr>
-
-        <tr>
-            <td>Mahesh</td>
-            <td>20</td>
-        </tr>
-    </table>
-
-    <hr>
-
-    <form>
-
-        <label>Name:</label>
-        <input type="text">
-
-        <br><br>
-
-        <button type="submit">
-            Submit
-        </button>
-
-    </form>
-
-    <!-- JavaScript -->
     <script>
-        alert("Welcome");
+        // Smooth Preloader Fade Out
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const preloader = document.getElementById('preloader');
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                }, 1500);
+            }, 2000); // 2 second dramatic delay
+        });
+
+        // Custom Cursor Logic
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorOutline = document.getElementById('cursor-outline');
+        
+        // Only run custom cursor on non-touch devices
+        if(window.matchMedia("(pointer: fine)").matches) {
+            window.addEventListener('mousemove', (e) => {
+                const posX = e.clientX;
+                const posY = e.clientY;
+                
+                // Dot follows instantly
+                cursorDot.style.left = `${posX}px`;
+                cursorDot.style.top = `${posY}px`;
+                
+                // Outline follows with a smooth delay using WAAPI
+                cursorOutline.animate({
+                    left: `${posX}px`,
+                    top: `${posY}px`
+                }, { duration: 500, fill: "forwards" });
+            });
+
+            // Interactive hover states for links and buttons
+            const hoverTargets = document.querySelectorAll('.hover-target, a, button');
+            
+            hoverTargets.forEach(target => {
+                target.addEventListener('mouseenter', () => {
+                    cursorOutline.style.width = '70px';
+                    cursorOutline.style.height = '70px';
+                    cursorOutline.style.backgroundColor = 'rgba(212, 175, 55, 0.15)';
+                    cursorOutline.style.borderColor = 'transparent';
+                    cursorDot.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                });
+                
+                target.addEventListener('mouseleave', () => {
+                    cursorOutline.style.width = '40px';
+                    cursorOutline.style.height = '40px';
+                    cursorOutline.style.backgroundColor = 'transparent';
+                    cursorOutline.style.borderColor = 'rgba(212, 175, 55, 0.6)';
+                    cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+                });
+            });
+        }
+
+        // Scroll Animation Observer (Reveals elements as you scroll down)
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.gallery-item').forEach(item => {
+            observer.observe(item);
+        });
+
+        // Subtle Parallax effect on mouse move for the Hero Section
+        const heroBg = document.querySelector('.hero-bg');
+        const hero = document.querySelector('.hero');
+        
+        hero.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 15;
+            const y = (e.clientY / window.innerHeight - 0.5) * 15;
+            
+            // Adjust the background position slightly based on mouse
+            heroBg.style.transform = `scale(1.15) translate(${x}px, ${y}px)`;
+        });
+
+        hero.addEventListener('mouseleave', () => {
+            heroBg.style.transform = `scale(1.15) translate(0px, 0px)`;
+            heroBg.style.transition = `transform 1.5s cubic-bezier(0.165, 0.84, 0.44, 1)`;
+            
+            // Remove transition after it resets to allow fast mouse tracking again
+            setTimeout(() => {
+                heroBg.style.transition = `none`;
+            }, 1500);
+        });
     </script>
-
 </body>
-
 </html>
